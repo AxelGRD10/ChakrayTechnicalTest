@@ -3,6 +3,7 @@ package controller;
 import jakarta.validation.Valid;
 import mapper.UserMapper;
 import model.CreateUserRequest;
+import model.LoginRequest;
 import model.UpdateUserRequest;
 import model.UserResponseDTO;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,6 @@ public class userController {
                 request.password(),
                 request.taxId()
         );
-
         return ResponseEntity.ok(
                 UserMapper.toDTO(user)
         );
@@ -64,10 +64,18 @@ public class userController {
 
         return ResponseEntity.noContent().build();
     }
-    @GetMapping("userFilter")
+    @GetMapping("/userFilter")
     public ResponseEntity<List<UserResponseDTO>> getUsersByFilter(
             @RequestParam String filter) {
 
-        return ResponseEntity.ok(userService.getUsersByFilter(filter));
+        return ResponseEntity.ok(userService.filterUsers(filter));
+    }
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDTO> login(
+            @RequestBody LoginRequest request) {
+
+        return ResponseEntity.ok(
+                userService.login(request.taxId(), request.password())
+        );
     }
 }
